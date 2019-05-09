@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.SalesVolumeRepository">
+    <resultMap type="com.eshop.domain.model.SalesVolume" id="salesVolumeResultMap" >
+        <id property="salesVolumeId" column="SalesVolumeId"/>
+        <result property="orderId" column="OrderId"/>
+        <result property="salesQuantity" column="SalesQuantity"/>
+    </resultMap>
+
+    <select id="queryByOrderId" resultMap="salesVolumeResultMap" parameterType="int">
+        SELECT SalesVolumeId, OrderId, SalesQuantity
+        FROM E_SalesVolume
+        WHERE OrderId = #{orderId}
+    </select>
+
+    <sql id="all_fields">
+        SalesVolumeId, OrderId, SalesQuantity
+    </sql>
+
+    <select id="findSalesVolumes" resultMap="salesVolumeResultMap">
+        SELECT
+        <include refid="all_fields"/>
+        FROM E_SalesVolume
+        WHERE
+        OrderId IN
+        <foreach collection="orderIds" item="orderId" open=" (" close=")" separator=",">
+            #{orderId}
+        </foreach>
+    </select>
+</mapper>

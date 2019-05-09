@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.SellerSalesRepository">
+
+    <resultMap type="com.eshop.domain.model.SellerSales" id="sellerSalesResultMap" >
+        <id property="sellerSalesId" column="SellerSalesId"/>
+        <result property="sellerId" column="SellerId"/>
+        <result property="orderDate" column="OrderDate"/>
+        <result property="goodsName" column="GoodsName"/>
+        <result property="quantity" column="Quantity"/>
+    </resultMap>
+
+    <insert id="add" parameterType="map">
+        INSERT INTO E_SellerSales(SellerId, OrderDate, GoodsName, Quantity)
+        VALUES(
+        #{sellerSales.sellerId},
+        #{sellerSales.orderDate},
+        #{sellerSales.goodsName},
+        #{sellerSales.quantity}
+        )
+    </insert>
+
+    <select id="queryAll" resultMap="sellerSalesResultMap" >
+        SELECT SellerSalesId, SellerId, OrderDate, GoodsName, Quantity FROM E_SellerSales
+    </select>
+
+    <select id="queryByGoodsNameAndOrderDate" resultMap="sellerSalesResultMap" parameterType="map">
+        SELECT SellerSalesId, SellerId, OrderDate, GoodsName, Quantity
+        FROM E_SellerSales
+        WHERE GoodsName like CONCAT('%',#{goodsName},'%') AND OrderDate = #{orderDate} AND SellerId = #{sellerId}
+    </select>
+
+    <select id="queryByGoodsName" resultMap="sellerSalesResultMap" parameterType="map">
+        SELECT SellerSalesId, SellerId, OrderDate, GoodsName, Quantity
+        FROM E_SellerSales
+        WHERE GoodsName like CONCAT('%',#{goodsName},'%') AND SellerId = #{sellerId}
+    </select>
+
+    <select id="queryBySellerId" resultMap="sellerSalesResultMap" parameterType="map">
+        SELECT SellerSalesId, SellerId, OrderDate, GoodsName, Quantity
+        FROM E_SellerSales
+        WHERE SellerId = #{sellerId}
+    </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.AdminRepository">
+
+    <resultMap type="com.eshop.domain.model.Admin" id="adminResultMap" >
+        <id property="adminId" column="AdminId"/>
+        <result property="adminName" column="AdminName"/>
+        <result property="adminPwd" column="AdminPwd"/>
+    </resultMap>
+
+    <insert id="add" parameterType="map">
+        INSERT INTO E_Admin(AdminName, AdminPwd)
+        VALUES (
+        #{admin.adminName},
+        #{admin.adminPwd}
+        )
+    </insert>
+
+    <select id="load" resultMap="adminResultMap" parameterType="int">
+        SELECT AdminId, AdminName, AdminPwd
+        FROM E_Admin
+        WHERE AdminId = #{adminId}
+    </select>
+
+    <select id="getAdminId" parameterType="String" resultType="int">
+        Select AdminId
+        FROM E_Admin
+        WHERE AdminName = #{adminName}
+    </select>
+
+    <select id="getAdminName" parameterType="int" resultType="String">
+        Select AdminName
+        FROM E_Admin
+        WHERE AdminId = #{adminId}
+    </select>
+
+    <select id="getAdminPwd" parameterType="String" resultType="String">
+        SELECT AdminPwd
+        FROM E_Admin
+        WHERE AdminName= #{adminName}
+    </select>
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.OrderRepository">
+
+   <resultMap type="com.eshop.domain.model.Order" id="orderResultMap" >
+       <id property="orderId" column="OrderId"/>
+       <result property="userId" column="UserId"/>
+       <result property="goodsId" column="GoodsId"/>
+       <result property="orderDate" column="OrderDate"/>
+       <result property="quantity" column="Quantity"/>
+       <result property="total" column="Total"/>
+    </resultMap>
+
+    <sql id="all_fields">
+        OrderId, UserId, GoodsId, OrderDate, Quantity, Total
+    </sql>
+
+    <insert id="add" parameterType="map">
+        INSERT INTO E_Order(UserId, GoodsId, OrderDate, Quantity, Total)
+        VALUES(
+        #{order.userId},
+        #{order.goodsId},
+        #{order.orderDate},
+        #{order.quantity},
+        #{order.total}
+        )
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM E_Order WHERE OrderId = #{orderId}
+    </delete>
+
+    <select id="queryByUserId" resultMap="orderResultMap" parameterType="int">
+        SELECT OrderId, UserId, GoodsId, OrderDate, Quantity, Total
+        FROM E_Order
+        WHERE UserId = #{userId}
+    </select>
+
+    <select id="queryByGoodsId" resultMap="orderResultMap" parameterType="int">
+        SELECT OrderId, UserId, GoodsId, OrderDate, Quantity, Total
+        FROM E_Order
+        WHERE GoodsId = #{goodsId}
+    </select>
+
+    <select id="queryByOrderId" resultMap="orderResultMap" parameterType="int">
+        SELECT OrderId, UserId, GoodsId, OrderDate, Quantity, Total
+        FROM E_Order
+        WHERE OrderId = #{orderId}
+    </select>
+
+    <select id="queryAll" resultMap="orderResultMap">
+        SELECT OrderId, UserId, GoodsId, OrderDate, Quantity, Total FROM E_Order
+    </select>
+
+    <select id="getUserId" resultType="int" parameterType="int">
+        SELECT UserId
+        FROM E_Order
+        WHERE OrderId = #{orderId}
+    </select>
+
+    <select id="getGoodsId" resultType="int" parameterType="int">
+        SELECT GoodsId
+        FROM E_Order
+        WHERE OrderId = #{orderId}
+    </select>
+
+    <select id="queryByOrderDate" resultMap="orderResultMap" parameterType="Date">
+        SELECT
+        <include refid="all_fields"/>
+        FROM
+        E_Order
+        WHERE OrderDate like CONCAT('%',#{goodsName},'%')
+    </select>
+
+    <select id="findOrder" parameterType="map" resultMap="orderResultMap">
+        SELECT
+        <include refid="all_fields"/>
+        FROM
+        E_Order
+        LIMIT #{start}, #{limit}
+    </select>
+
+    <select id="findOrders" resultMap="orderResultMap">
+        SELECT
+        <include refid="all_fields"/>
+        FROM E_Order
+        WHERE
+        GoodsId IN
+        <foreach collection="goodsIds" item="goodsId" open=" (" close=")" separator=",">
+            #{goodsId}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.GoodsRepository">
+
+    <resultMap type="com.eshop.domain.model.Goods" id="goodsResultMap" >
+        <id property="goodsId" column="GoodsId"/>
+        <result property="sellerId" column="SellerId"/>
+        <result property="goodsName" column="GoodsName"/>
+        <result property="goodsBrand" column="GoodsBrand"/>
+        <result property="goodsType" column="GoodsType"/>
+        <result property="goodsFor" column="GoodsFor"/>
+        <result property="goodsStock" column="GoodsStock"/>
+        <result property="goodsSales" column="GoodsSales"/>
+        <result property="goodsPrice" column="GoodsPrice"/>
+    </resultMap>
+
+    <sql id="all_fields">
+        GoodsId, SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsSales, GoodsPrice
+    </sql>
+
+
+    <insert id="add" parameterType="map">
+        INSERT INTO E_Goods(SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsPrice)
+        VALUES(
+        #{goods.sellerId},
+        #{goods.goodsName},
+        #{goods.goodsBrand},
+        #{goods.goodsType},
+        #{goods.goodsFor},
+        #{goods.goodsStock},
+        #{goods.goodsPrice}
+        )
+    </insert>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM E_Goods WHERE GoodsId = #{goodsId}
+    </delete>
+
+    <update id="update" parameterType="map">
+        UPDATE E_Goods
+        SET
+        GoodsName = #{goods.goodsName},
+        GoodsBrand = #{goods.goodsBrand},
+        GoodsType = #{goods.goodsType},
+        GoodsFor = #{goods.goodsFor},
+        GoodsStock = #{goods.goodsStock},
+        GoodsPrice = #{goods.goodsPrice}
+        WHERE GoodsId= #{goods.goodsId}
+    </update>
+
+
+
+    <select id="queryBySellerId" resultMap="goodsResultMap" parameterType="int">
+        SELECT GoodsId, SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsSales, GoodsPrice
+        FROM E_Goods
+        WHERE SellerId = #{sellerId}
+    </select>
+
+    <select id="queryBySellerIdAndGoodsName" resultMap="goodsResultMap" parameterType="map">
+        SELECT GoodsId, SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsSales, GoodsPrice
+        FROM E_Goods
+        WHERE GoodsName like CONCAT('%',#{goodsName},'%') AND SellerId = #{sellerId}
+    </select>
+
+    <select id="queryByGoodsName" resultMap="goodsResultMap" parameterType="map">
+        SELECT GoodsId, SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsSales, GoodsPrice
+        FROM E_Goods
+        WHERE GoodsName like CONCAT('%',#{goodsName},'%')
+    </select>
+
+    <select id="queryByGoodsId" resultMap="goodsResultMap" parameterType="int">
+        SELECT GoodsId, SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsSales, GoodsPrice
+        FROM E_Goods
+        WHERE GoodsId = #{goodsId}
+    </select>
+
+    <select id="queryAllGoods" resultMap="goodsResultMap">
+        SELECT GoodsId, SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsSales, GoodsPrice
+        FROM E_Goods
+    </select>
+
+    <select id="getGoodsName" resultType="String" parameterType="int">
+        Select GoodsName
+        From E_Goods
+        WHERE GoodsId = #{goodsId}
+    </select>
+
+    <update id="updateSalesAndStock" parameterType="map">
+        UPDATE E_Goods
+        SET
+        GoodsSales = #{sales},
+        GoodsStock = #{stock}
+        WHERE GoodsId = #{goodsId}
+    </update>
+
+    <select id="findGoods" parameterType="map" resultMap="goodsResultMap">
+        SELECT
+        <include refid="all_fields"/>
+        FROM
+        E_Goods
+        LIMIT #{start}, #{limit}
+    </select>
+
+    <select id="findGoodss" resultMap="goodsResultMap">
+        SELECT
+        <include refid="all_fields"/>
+        FROM E_Goods
+        WHERE
+        GoodsId IN
+        <foreach collection="goodsIds" item="goodsId" open=" (" close=")" separator=",">
+            #{goodsId}
+        </foreach>
+    </select>
+
+
+    <select id="queryByGoodsBrand" resultMap="goodsResultMap">
+        SELECT GoodsId, SellerId, GoodsName, GoodsBrand, GoodsType, GoodsFor, GoodsStock, GoodsSales, GoodsPrice
+        FROM E_Goods
+        WHERE GoodsBrand = #{goodsBrand}
+    </select>
+</mapper>

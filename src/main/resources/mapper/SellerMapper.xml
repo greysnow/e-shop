@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.SellerRepository">
+
+    <resultMap type="com.eshop.domain.model.Seller" id="sellerResultMap" >
+        <id property="sellerId" column="SellerId"/>
+        <result property="sellerName" column="SellerName"/>
+        <result property="sellerPwd" column="SellerPwd"/>
+        <result property="sellerEmail" column="SellerEmail"/>
+        <result property="sellerTel" column="SellerTel"/>
+        <result property="sellerAddress" column="SellerAddress"/>
+    </resultMap>
+
+    <sql id="all_fields">
+        SellerId, SellerName, SellerPwd, SellerEmail, SellerTel, SellerAddress
+    </sql>
+
+    <insert id="add" parameterType="map">
+        INSERT INTO E_Seller(SellerName, SellerPwd, SellerEmail, SellerTel, SellerAddress)
+        VALUES (
+        #{seller.sellerName},
+        #{seller.sellerPwd},
+        #{seller.sellerEmail},
+        #{seller.sellerTel},
+        #{seller.sellerAddress}
+        )
+    </insert>
+
+    <delete id="delete" parameterType="map">
+      DELETE FROM E_Seller WHERE SellerId = #{sellerId}
+    </delete>
+
+    <update id="update" parameterType="map">
+        UPDATE E_Seller
+        SET
+        SellerPwd = #{seller.sellerPwd},
+        SellerEmail = #{seller.sellerEmail},
+        SellerTel = #{seller.sellerTel},
+        SellerAddress = #{seller.sellerAddress}
+        WHERE SellerId = #{seller.sellerId}
+    </update>
+
+    <select id="load" parameterType="int" resultMap="sellerResultMap">
+        SELECT SellerId, SellerName, SellerPwd, SellerEmail, SellerTel, SellerAddress
+        FROM E_Seller
+        WHERE SellerId = #{sellerId}
+    </select>
+
+    <select id="queryAll" resultMap="sellerResultMap">
+        SELECT SellerId, SellerName, SellerPwd, SellerEmail, SellerTel, SellerAddress FROM E_Seller
+    </select>
+
+    <select id="getSellerId" parameterType="String" resultType="int">
+        Select SellerId
+        From E_Seller
+        WHERE SellerName = #{sellerName}
+    </select>
+
+    <select id="getSellerName" parameterType="int" resultType="String">
+        Select SellerName
+        From E_Seller
+        WHERE SellerId = #{sellerId}
+    </select>
+
+    <select id="getSellerPwd" parameterType="String" resultType="String">
+        SELECT SellerPwd
+        FROM E_Seller
+        WHERE SellerName= #{sellerName}
+    </select>
+    <!--
+        <select id="findUserByNameAndPwd"  parameterType="map"  resultType="User">
+            select t.name,t.password from Customer t where name=#{name} and password=#{password}
+        </select>
+
+        <delete id="delete" parameterType="String">
+            DELETE FROM Customer WHERE sellerName = #{sellerName}
+        </delete>
+
+        <update id="update" parameterType="customerResultMap">
+            UPDATE Customer
+            SET customerPassword = #{customerPassword}, sellerEmail = #{sellerEmail}, sellerTel = #{sellerTel}, sellerAddress = #{sellerAddress}
+            WHERE sellerName= #{sellerName}
+        </update>
+
+        <select id="load" resultMap="customerResultMap" parameterType="String">
+            SELECT sellerName, customerPassword, sellerEmail, sellerTel, sellerAddress
+            FROM Customer
+            WHERE sellerName = #{sellerName}
+        </select>
+
+        <select id="queryAll" resultMap="customerResultMap">
+            SELECT sellerName, customerPassword, sellerEmail, sellerTel, sellerAddress FROM Customer
+        </select>-->
+
+    <select id="findSellers" resultMap="sellerResultMap">
+        SELECT
+        <include refid="all_fields"/>
+        FROM E_Seller
+        WHERE
+        SellerId IN
+        <foreach collection="sellerIds" item="sellerId" open=" (" close=")" separator=",">
+            #{sellerId}
+        </foreach>
+    </select>
+</mapper>

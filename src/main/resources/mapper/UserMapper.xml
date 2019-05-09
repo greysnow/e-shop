@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.UserRepository">
+
+    <resultMap type="com.eshop.domain.model.User" id="userResultMap" >
+        <id property="userId" column="UserId"/>
+        <result property="userName" column="UserName"/>
+        <result property="userPwd" column="UserPwd"/>
+        <result property="userEmail" column="UserEmail"/>
+        <result property="userTel" column="UserTel"/>
+        <result property="userAddress" column="UserAddress"/>
+    </resultMap>
+
+    <sql id="all_fields">
+        UserId, UserName, UserPwd, UserEmail, UserTel, UserAddress
+    </sql>
+
+    <insert id="add" parameterType="map">
+        INSERT INTO E_User(UserName, UserPwd, UserEmail, UserTel, UserAddress)
+        VALUES (
+        #{user.userName},
+        #{user.userPwd},
+        #{user.userEmail},
+        #{user.userTel},
+        #{user.userAddress}
+        )
+    </insert>
+
+    <delete id="delete" parameterType="map">
+      DELETE FROM E_User WHERE UserId = #{userId}
+    </delete>
+
+    <update id="update" parameterType="map">
+        UPDATE E_User
+        SET 
+        UserPwd = #{user.userPwd},
+        UserEmail = #{user.userEmail}, 
+        UserTel = #{user.userTel}, 
+        UserAddress = #{user.userAddress}
+        WHERE UserId = #{user.userId}
+    </update>
+
+    <select id="load" resultMap="userResultMap" parameterType="int">
+        SELECT UserId, UserName, UserPwd, UserEmail, UserTel, UserAddress
+        FROM E_User
+        WHERE UserId = #{userId}
+    </select>
+
+    <select id="queryAll" resultMap="userResultMap">
+        SELECT UserId, UserName, UserPwd, UserEmail, UserTel, UserAddress FROM E_User
+    </select>
+
+    <select id="getUserId" parameterType="String" resultType="int">
+        Select UserId
+        FROM E_User
+        WHERE UserName = #{userName}
+    </select>
+
+    <select id="getUserName" parameterType="int" resultType="String">
+        Select UserName
+        FROM E_User
+        WHERE UserId = #{userId}
+    </select>
+
+    <select id="getUserPwd" parameterType="String" resultType="String">
+        SELECT UserPwd
+        FROM E_User
+        WHERE UserName= #{userName}
+    </select>
+<!--
+    <select id="selectUserList" resultMap="userResultMap">
+        select
+        <include refid="all_fields" />
+        from E_User
+    </select>
+
+    <select id="selectCount" resultType="int">
+		select count(*) from E_User
+	</select>
+-->
+    <select id="findUsers" resultMap="userResultMap">
+        SELECT
+        <include refid="all_fields"/>
+        FROM E_User
+        WHERE
+        UserId IN
+        <foreach collection="userIds" item="userId" open=" (" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </select>
+</mapper>

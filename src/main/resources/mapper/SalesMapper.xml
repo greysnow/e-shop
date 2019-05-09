@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.domain.repository.SalesRepository">
+
+    <resultMap type="com.eshop.domain.model.Sales" id="salesResultMap" >
+        <id property="salesId" column="SalesId"/>
+        <result property="orderDate" column="OrderDate"/>
+        <result property="goodsBrand" column="GoodsBrand"/>
+        <result property="quantity" column="Quantity"/>
+    </resultMap>
+
+    <insert id="add" parameterType="map">
+        INSERT INTO E_Sales(OrderDate, GoodsBrand, Quantity)
+        VALUES(
+        #{sales.orderDate},
+        #{sales.goodsBrand},
+        #{sales.quantity}
+        )
+    </insert>
+
+    <select id="queryAll" resultMap="salesResultMap" >
+        SELECT SalesId, OrderDate, GoodsBrand, Quantity FROM E_Sales
+    </select>
+
+    <select id="queryByGoodsBrandAndOrderDate" resultMap="salesResultMap" parameterType="map">
+        SELECT SalesId, OrderDate, GoodsBrand, Quantity
+        FROM E_Sales
+        WHERE GoodsBrand = #{goodsBrand} AND OrderDate = #{orderDate}
+    </select>
+
+    <select id="queryByGoodsBrand" resultMap="salesResultMap" parameterType="map">
+        SELECT SalesId, OrderDate, GoodsBrand, Quantity
+        FROM E_Sales
+        WHERE GoodsBrand = #{goodsBrand}
+    </select>
+
+</mapper>
